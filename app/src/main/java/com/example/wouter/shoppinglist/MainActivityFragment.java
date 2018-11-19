@@ -14,10 +14,12 @@ public class MainActivityFragment extends Fragment implements  View.OnClickListe
 
     private Button startNewListButton;
     private Button selectCreatedListButton;
+    DBHandler db;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        db = new DBHandler(getContext());
     }
 
     @Override

@@ -24,6 +24,7 @@ public class DBHandler extends SQLiteOpenHelper {
     //define table columns
     private static final String KEY_ID = "id";
     private  static final String KEY_NAME = "name";
+    private static final String KEY_BRAND = "brand";
 
     public DBHandler(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
@@ -33,7 +34,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_PRODUCT + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_NAME + " TEXT " + ")";
+                + KEY_NAME + " TEXT ,"
+                + KEY_BRAND + "TEXT" + ")";
         db.execSQL(CREATE_PRODUCT_TABLE);
 
     }
@@ -52,6 +54,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, newProd.get_name());
+        values.put(KEY_BRAND , newProd.get_brand());
 
         //inserting row
         db.insert(TABLE_PRODUCT , null, values);
@@ -61,18 +64,36 @@ public class DBHandler extends SQLiteOpenHelper {
     public List<Product> getAllProducts(){
         List<Product> productList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_PRODUCT;
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery , null);
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
 
-        if(cursor.moveToFirst()){
-            do{
-                Product prod = new Product();
-                prod.set_id(Integer.parseInt(cursor.getString(0)));
-                prod.set_name(cursor.getString(1));
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            try {
 
-                productList.add(prod);
-            } while (cursor.moveToNext());
+                // looping through all rows and adding to list
+                if (cursor.moveToFirst()) {
+                    do {
+                        Product prod = new Product();
+                        prod.set_id(Integer.parseInt(cursor.getString(0)));
+                        prod.set_name(cursor.getString(1));
+                        prod.set_brand(cursor.getString(2));
+
+
+                        productList.add(prod);
+                    } while (cursor.moveToNext());
+                }
+
+            } finally {
+                try { cursor.close(); } catch (Exception ignore) {}
+            }
+
+        } finally {
+            try { db.close(); } catch (Exception ignore) {}
         }
+
+
+
+
 
         return productList;
     }
