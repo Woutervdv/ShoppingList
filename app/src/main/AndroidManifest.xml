@@ -18,7 +18,7 @@
         </activity>
         <activity android:name=".MakeNewListActivity"></activity>
         <activity android:name=".MakeNewProductActivity"></activity>
-        <activity android:name=".SelectProductActivity"></activity>
+        <activity android:name=".ProductsActivity"></activity>
     </application>
 
 </manifest>

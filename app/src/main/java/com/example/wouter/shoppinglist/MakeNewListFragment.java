@@ -66,7 +66,7 @@ public class MakeNewListFragment extends Fragment implements  View.OnClickListen
                 break;
 
             case R.id.btnSelectItem:
-                Intent intentSelectItem = new Intent(getActivity() , SelectProductActivity.class);
+                Intent intentSelectItem = new Intent(getActivity() , ProductsActivity.class);
                 this.startActivity(intentSelectItem);
                 break;
 

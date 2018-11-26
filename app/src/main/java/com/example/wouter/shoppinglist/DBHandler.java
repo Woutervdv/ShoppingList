@@ -5,9 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class DBHandler extends SQLiteOpenHelper {
 
@@ -35,7 +38,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_PRODUCT + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT ,"
-                + KEY_BRAND + "TEXT" + ")";
+                + KEY_BRAND + " TEXT" + ")";
         db.execSQL(CREATE_PRODUCT_TABLE);
 
     }
@@ -52,20 +55,30 @@ public class DBHandler extends SQLiteOpenHelper {
 
     void addNewProduct(Product newProd){
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_NAME, newProd.get_name());
-        values.put(KEY_BRAND , newProd.get_brand());
+        try{
 
-        //inserting row
-        db.insert(TABLE_PRODUCT , null, values);
-        db.close();
+            ContentValues values = new ContentValues();
+            values.put(KEY_NAME, newProd.get_name());
+            values.put(KEY_BRAND , newProd.get_brand());
+
+            //inserting row
+            db.insert(TABLE_PRODUCT , null, values);
+        }catch (Exception ex){
+            Log.d(TAG, "CreateProduct: Failed ");
+        }finally {
+            db.close();
+        }
+
+
     }
 
-    public List<Product> getAllProducts(){
-        List<Product> productList = new ArrayList<>();
+    public ArrayList<Product> getAllProducts(){
+        ArrayList<Product> productList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_PRODUCT;
         SQLiteDatabase db = this.getReadableDatabase();
         try {
+
+
 
             Cursor cursor = db.rawQuery(selectQuery, null);
             try {
@@ -83,11 +96,15 @@ public class DBHandler extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
 
-            } finally {
+            } catch (Exception ex){
+                Log.d(TAG, "getProduct: Failed ");
+            }finally{
                 try { cursor.close(); } catch (Exception ignore) {}
             }
 
-        } finally {
+        }catch (Exception ex){
+            Log.d(TAG, "getProduct: Failed ");
+        }finally {
             try { db.close(); } catch (Exception ignore) {}
         }
 

@@ -24,7 +24,7 @@ public class MakeNewProductFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        db = new DBHandler(getActivity());
+        db = new DBHandler(getActivity().getApplicationContext());
 
     }
 
