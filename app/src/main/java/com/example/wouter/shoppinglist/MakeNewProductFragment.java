@@ -48,7 +48,19 @@ public class MakeNewProductFragment extends Fragment implements View.OnClickList
                 CreateProduct();
                 Toast.makeText(getActivity(), "product created",
                         Toast.LENGTH_LONG).show();
-                getActivity().finish();
+
+                MakeNewListFragment ldf = new MakeNewListFragment();
+                Bundle args = new Bundle();
+                args.putString("Name" , product.get_name());
+                args.putString("Brand" , product.get_brand());
+                ldf.setArguments(args);
+                getFragmentManager().beginTransaction().add(R.id.fragmentMake , ldf).commit();
+
+
+
+
+
+                //getActivity().finish();
                 break;
         }
     }
