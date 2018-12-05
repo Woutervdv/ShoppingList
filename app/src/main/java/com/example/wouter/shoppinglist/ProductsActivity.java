@@ -1,6 +1,5 @@
 package com.example.wouter.shoppinglist;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +40,7 @@ public class ProductsActivity extends AppCompatActivity
                     new ArrayList<HashMap<String, String>>();
             for (Product prod : products){
                 HashMap<String, String> map = new HashMap<String, String>();
-                map.put("Name", prod.get_name());
+                map.put("Nam.e", prod.get_name());
                 map.put("Brand", prod.get_brand());
                 data.add(map);
             }
