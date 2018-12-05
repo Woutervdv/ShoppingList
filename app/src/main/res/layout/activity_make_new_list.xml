@@ -7,7 +7,7 @@
     android:layout_height="match_parent">
 
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/fragmentMake"
         android:name="com.example.wouter.shoppinglist.MakeNewListFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
