@@ -33,11 +33,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAddProductToDB" />
-
-    <ListView
-        android:id="@+id/shoppingListListView"
-        android:layout_width="382dp"
-        android:layout_height="415dp"
-        app:layout_constraintStart_toStartOf="@+id/btnSelectItem"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectItem" />
 </android.support.constraint.ConstraintLayout>
