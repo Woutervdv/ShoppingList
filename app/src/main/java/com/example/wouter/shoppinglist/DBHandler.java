@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.nfc.Tag;
 import android.util.Log;
+import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,27 +31,40 @@ public class DBHandler extends SQLiteOpenHelper {
     private  static final String KEY_NAME = "name";
     private static final String KEY_BRAND = "brand";
 
+
+    private ArrayList<Product> products;
+
     public DBHandler(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION);}
 
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_PRODUCT + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_NAME + " TEXT ,"
-                + KEY_BRAND + " TEXT" + ")";
-        db.execSQL(CREATE_PRODUCT_TABLE);
+        try{
+            String CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_PRODUCT + "("
+                    + KEY_ID + " INTEGER PRIMARY KEY,"
+                    + KEY_NAME + " TEXT ,"
+                    + KEY_BRAND + " TEXT" + ")";
+            db.execSQL(CREATE_PRODUCT_TABLE);
+        }catch (Exception ex){
+            Log.d(TAG, "onCreate failed");
+        }
+
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        //drop old table
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
+        try{
+            //drop old table
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCT);
 
-        //create new one
-        onCreate(db);
+            //create new one
+            onCreate(db);
+        }catch (Exception ex){
+            Log.d(TAG, "onUpdate: failed");
+        }
+
 
     }
 
@@ -113,5 +128,44 @@ public class DBHandler extends SQLiteOpenHelper {
 
 
         return productList;
+    }
+
+    public Product getItem (int index){
+        products = getAllProducts();
+        return products.get(index);
+    }
+
+    public void saveList(String title){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+            db.execSQL("DROP TABLE IF EXISTS " + title);
+            String CREATE_PRODUCT_TABLE = "CREATE TABLE " + title + "("
+                    + KEY_ID + " INTEGER PRIMARY KEY,"
+                    + KEY_NAME + " TEXT ,"
+                    + KEY_BRAND + " TEXT" + ")";
+            db.execSQL(CREATE_PRODUCT_TABLE);
+        }catch (Exception ex){
+            Log.d(TAG, "saveList: failed");
+        }finally {
+            db.close();
+        }
+
+    }
+
+    public void putItemToList(Product prod, String title){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try{
+
+            ContentValues values = new ContentValues();
+            values.put(KEY_NAME, prod.get_name());
+            values.put(KEY_BRAND , prod.get_brand());
+
+            //inserting row
+            db.insert(title , null, values);
+        }catch (Exception ex){
+            Log.d(TAG, "putItemToList: Failed ");
+        }finally {
+            db.close();
+        }
     }
 }

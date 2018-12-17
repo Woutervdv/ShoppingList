@@ -1,5 +1,7 @@
 package com.example.wouter.shoppinglist;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -46,6 +48,13 @@ public class MakeNewProductFragment extends Fragment implements View.OnClickList
 
                 product = new Product(name.getText().toString() , brand.getText().toString());
                 CreateProduct();
+                Intent intent = new Intent(getActivity() , MakeNewListActivity.class);
+
+                intent.putExtra("name", product.get_name());
+                intent.putExtra("brand", product.get_brand());
+                getActivity().setResult(getActivity().RESULT_OK, intent);
+
+
                 Toast.makeText(getActivity(), "product created",
                         Toast.LENGTH_LONG).show();
                 getActivity().finish();

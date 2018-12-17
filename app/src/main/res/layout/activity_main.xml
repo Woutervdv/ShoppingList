@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <fragment
-        android:id="@+id/fragment2"
+        android:id="@+id/fragmentMain"
         android:name="com.example.wouter.shoppinglist.MainActivityFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"

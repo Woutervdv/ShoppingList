@@ -1,5 +1,7 @@
 package com.example.wouter.shoppinglist;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -40,7 +42,7 @@ public class ProductsActivity extends AppCompatActivity
                     new ArrayList<HashMap<String, String>>();
             for (Product prod : products){
                 HashMap<String, String> map = new HashMap<String, String>();
-                map.put("Nam.e", prod.get_name());
+                map.put("Name", prod.get_name());
                 map.put("Brand", prod.get_brand());
                 data.add(map);
             }
@@ -63,5 +65,24 @@ public class ProductsActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        Product product = db.getItem(position);
+
+
+        Intent intent = new Intent(this , MakeNewListActivity.class);
+
+        intent.putExtra("name", product.get_name());
+        intent.putExtra("brand", product.get_brand());
+        setResult(Activity.RESULT_OK , intent);
+        finish();
+
+
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(this , MakeNewListActivity.class);
+        setResult(Activity.RESULT_OK , intent);
+        finish();
+    }
+
 }
