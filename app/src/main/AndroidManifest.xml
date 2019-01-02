@@ -16,9 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MakeNewListActivity"></activity>
-        <activity android:name=".MakeNewProductActivity"></activity>
-        <activity android:name=".ProductsActivity"></activity>
+        <activity android:name=".MakeNewListActivity" />
+        <activity android:name=".MakeNewProductActivity" />
+        <activity android:name=".ProductsActivity" />
+        <activity android:name=".SelectCreatedListActivity"></activity>
     </application>
 
 </manifest>

@@ -41,7 +41,7 @@ public class MainActivityFragment extends Fragment implements  View.OnClickListe
                 makeNewList();
                 break;
             case R.id.btnSelectCreatedList:
-
+                selectCreatedList();
                 break;
         }
     }
@@ -49,6 +49,11 @@ public class MainActivityFragment extends Fragment implements  View.OnClickListe
 
     public void makeNewList(){
         Intent intent = new Intent(getActivity() , MakeNewListActivity.class);
+        this.startActivity(intent);
+    }
+
+    public void selectCreatedList(){
+        Intent intent = new Intent(getActivity(), SelectCreatedListActivity.class);
         this.startActivity(intent);
     }
 
