@@ -19,7 +19,8 @@
         <activity android:name=".MakeNewListActivity" />
         <activity android:name=".MakeNewProductActivity" />
         <activity android:name=".ProductsActivity" />
-        <activity android:name=".SelectCreatedListActivity"></activity>
+        <activity android:name=".SelectCreatedListActivity" />
+        <activity android:name=".ListDetailsActivity"></activity>
     </application>
 
 </manifest>

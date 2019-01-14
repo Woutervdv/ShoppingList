@@ -19,10 +19,10 @@ public class DBHandler extends SQLiteOpenHelper {
 
     //static variables
     //Database version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     //Database name
-    private static final String DATABASE_NAME = "products";
+    private static final String DATABASE_NAME = "ShoppingsList";
 
     //contacts table name
     private static final String TABLE_PRODUCT = "product";
@@ -48,20 +48,23 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         try{
             String CREATE_PRODUCT_TABLE = "CREATE TABLE " + TABLE_PRODUCT + "("
-                    + KEY_ID + " INTEGER PRIMARY KEY,"
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + KEY_NAME + " TEXT UNIQUE,"
                     + KEY_BRAND + " TEXT" + ")";
             db.execSQL(CREATE_PRODUCT_TABLE);
 
             String CREATE_LIST_TABLE = "CREATE TABLE " + TABLE_LIST + "("
-                    + KEY_LIST_ID + " INTEGER PRIMARY KEY,"
+                    + KEY_LIST_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + KEY_LIST_NAME + " TEXT UNIQUE )";
             db.execSQL(CREATE_LIST_TABLE);
 
             String CREATE_ITEMS_IN_LIST = "CREATE TABLE " + TABLE_ITEMS_IN_LISTS + " ("
-                    + KEY_ITEMS_ID + " INTEGER PRIMARY KEY, "
+                    + KEY_ITEMS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                     + KEY_LIST_ID + " INTEGER, "
-                    + KEY_ID + " INTEGER )";
+                    + KEY_ID+ " INTEGER,"
+                    +"FOREIGN KEY ("+KEY_LIST_ID+") REFERENCES "+TABLE_LIST +" ("+KEY_LIST_ID+"),"
+                    +"FOREIGN KEY ("+KEY_ID+") REFERENCES "+TABLE_PRODUCT +" ("+KEY_ID+") )";
+
             db.execSQL(CREATE_ITEMS_IN_LIST);
         }catch (Exception ex){
             Log.d(TAG, "onCreate failed");
@@ -129,13 +132,13 @@ public class DBHandler extends SQLiteOpenHelper {
                 }
 
             } catch (Exception ex){
-                Log.d(TAG, "getProduct: Failed ");
+                Log.d(TAG, "getAllProduct: Failed ");
             }finally{
                 try { cursor.close(); } catch (Exception ignore) {}
             }
 
         }catch (Exception ex){
-            Log.d(TAG, "getProduct: Failed ");
+            Log.d(TAG, "getAllProduct: Failed ");
         }finally {
             try { db.close(); } catch (Exception ignore) {}
         }
@@ -147,44 +150,89 @@ public class DBHandler extends SQLiteOpenHelper {
         return productList;
     }
 
-    public Product getItem (int index){
+    public Product getProduct (int index){
         products = getAllProducts();
         return products.get(index);
     }
 
-    public int saveList(String title){
-        int id =0 ;
-        SQLiteDatabase dbw = this.getWritableDatabase();
-        SQLiteDatabase dbr = this.getReadableDatabase();
+    public Product getProductId (String name , String brand){
+        Product prod = new Product();;
+        String selectQuery = "SELECT * FROM " + TABLE_PRODUCT + " WHERE " + KEY_NAME + " = '" + name + "' AND " + KEY_BRAND + " = '" + brand + "';" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            try {
+
+                // looping through all rows and adding to list
+                cursor.moveToFirst();
+
+
+                        prod.set_id(Integer.parseInt(cursor.getString(0)));
+                        prod.set_name(cursor.getString(1));
+                        prod.set_brand(cursor.getString(2));
+
+
+
+
+
+            } catch (Exception ex){
+                Log.d(TAG, "getProductId: Failed ");
+            }finally{
+                try { cursor.close(); } catch (Exception ignore) {}
+            }
+
+        }catch (Exception ex){
+            Log.d(TAG, "getProductId: Failed ");
+        }finally {
+            try { db.close(); } catch (Exception ignore) {}
+        }
+        return prod;
+    }
+
+    public com.example.wouter.shoppinglist.List getList(int index){
+        ArrayList<com.example.wouter.shoppinglist.List> lists = new ArrayList<>();
+        lists = getAllLists();
+        return lists.get(index);
+    }
+
+    public void saveList(com.example.wouter.shoppinglist.List list){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
         try{
             ContentValues values = new ContentValues();
-            values.put(KEY_LIST_NAME, title);
+            values.put(KEY_LIST_NAME, list.get_listName());
 
             //insert row
-            dbw.insert(TABLE_LIST, null, values);
-
-            dbw.close();
+            db.insert(TABLE_LIST, null, values);
 
 
-            String GET_ID = "SELECT "+ KEY_ID + " FROM "+ TABLE_LIST + " WHERE " + KEY_LIST_NAME + " = ?;" ;
-            id =(int)DatabaseUtils.longForQuery(dbr,GET_ID , new String[]{ title });
+            db.close();
+
+
+
+
         }catch (Exception ex){
-            Log.d(TAG, "saveList: failed");
+            Log.d(TAG, ex.getMessage());
         }finally {
-            dbw.close();
-            dbr.close();
-            return id;
+            db.close();
+
+
         }
 
     }
 
-    public void putItemToList(int id, String name ){
+
+    public void putItemToList(com.example.wouter.shoppinglist.List list, Product prod){
         SQLiteDatabase db = this.getWritableDatabase();
         try{
-
+            Cursor c = db.rawQuery("SELECT "+ KEY_LIST_ID +" FROM "+ TABLE_LIST+" WHERE "+ KEY_LIST_NAME +" = '" + list.get_listName() + "';", null  );
+            c.moveToFirst();
+            int id = c.getInt(0);
             ContentValues values = new ContentValues();
             values.put(KEY_LIST_ID, id);
-            values.put(KEY_NAME , name);
+            values.put(KEY_ID , prod.get_id());
 
             //inserting row
             db.insert(TABLE_ITEMS_IN_LISTS , null, values);
@@ -195,7 +243,116 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public ArrayList<com.example.wouter.shoppinglist.List> getAllLists(){
+        ArrayList<com.example.wouter.shoppinglist.List> lists = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_LIST ;
+        SQLiteDatabase db = getReadableDatabase();
+        try{
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            try {
+
+                // looping through all rows and adding to list
+                if (cursor.moveToFirst()) {
+                    do {
+                        com.example.wouter.shoppinglist.List list= new com.example.wouter.shoppinglist.List();
+                        list.set_listId(Integer.parseInt(cursor.getString(0)));
+                        list.set_listName(cursor.getString(1));
+                        lists.add(list);
+                    } while (cursor.moveToNext());
+                }
+
+            } catch (Exception ex){
+                Log.d(TAG, "getList: Failed ");
+            }finally{
+                try { cursor.close(); } catch (Exception ignore) {}
+            }
+
+        }catch (Exception ex){
+            Log.d(TAG, "getLists: Failed ");
+        }finally {
+            try { db.close(); } catch (Exception ignore) {}
+        }
+
+        return lists;
+    }
+
+    public ArrayList<ItemsInList> getItemsInList(int id){
+        ArrayList<ItemsInList> items = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_ITEMS_IN_LISTS + " WHERE " + KEY_LIST_ID + " = " + id ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        try{
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            try {
+
+                // looping through all rows and adding to list
+                cursor.moveToFirst();
+                    do {
+                        ItemsInList item = new ItemsInList();
+                        String test = cursor.getString(0);
+                        item.set_itemsId(32);
+                        item.set_listId(Integer.parseInt(cursor.getString(1)));
+                        item.set_productId(Integer.parseInt(cursor.getString(2)));
 
 
+                        items.add(item);
+                    } while (cursor.moveToNext());
+
+
+            } catch (Exception ex){
+                Log.d(TAG, "getItemsInList: Failed ");
+            }finally{
+                try { cursor.close(); } catch (Exception ignore) {}
+            }
+
+        }catch (Exception ex){
+            Log.d(TAG, "getItemsInList: Failed ");
+        }finally {
+            try { db.close(); } catch (Exception ignore) {}
+        }
+
+        return items;
+
+    }
+
+    public Product getProductInList(int id){
+        Product prod = new Product();
+        String query = "SELECT * FROM " + TABLE_PRODUCT + " WHERE " +KEY_ID + " = " + id ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+
+
+
+            Cursor cursor = db.rawQuery(query, null);
+            try {
+
+                // looping through all rows and adding to list
+                if (cursor.moveToFirst()) {
+
+
+                        prod.set_id(Integer.parseInt(cursor.getString(0)));
+                        prod.set_name(cursor.getString(1));
+                        prod.set_brand(cursor.getString(2));
+
+
+
+
+                }
+
+            } catch (Exception ex){
+                Log.d(TAG, "getProductInList: Failed ");
+            }finally{
+                try { cursor.close(); } catch (Exception ignore) {}
+            }
+
+        }catch (Exception ex){
+            Log.d(TAG, "getProductInList: Failed ");
+        }finally {
+            try { db.close(); } catch (Exception ignore) {}
+        }
+        return prod;
+    }
 
 }
+
+
+// + " WHERE " + KEY_LIST_ID + " = " + id

@@ -73,14 +73,31 @@ public class MakeNewListActivity extends AppCompatActivity implements  View.OnCl
                 startActivityForResult(intentSelectItem ,value);
                 break;
             case R.id.btnSave:
+                List list = new List();
                 title = (EditText)findViewById(R.id.txtTitle);
-
-                int id = db.saveList(title.getText().toString());
-                sendDataToDb(id);
+                list.set_listName(title.getText().toString());
+                db.saveList(list);
+                saveItemsToListToDb(list);
                 finish();
                 break;
 
         }
+
+
+    }
+
+    public void saveItemsToListToDb(List list){
+        View v;
+        TextView textView;
+        TextView textView2;
+        for (int i = 0; i < lv.getCount(); i++) {
+            v = lv.getChildAt(i);
+            textView = (TextView) v.findViewById(R.id.prodNameTextView);
+            textView2 = (TextView) v.findViewById(R.id.prodBrandTextView);
+            Product prod = db.getProductId(textView.getText().toString() , textView2.getText().toString());
+            db.putItemToList(list , prod);
+        }
+
 
 
     }
@@ -121,16 +138,5 @@ public class MakeNewListActivity extends AppCompatActivity implements  View.OnCl
 
 
 
-    public void sendDataToDb(int id){
-        View v;
-        TextView textView;
-        for (int i = 0; i < lv.getCount(); i++) {
-            v = lv.getChildAt(i);
-            textView = (TextView) v.findViewById(R.id.prodNameTextView);
-            db.putItemToList(id, textView.getText().toString());
-        }
 
-
-
-    }
 }

@@ -65,7 +65,7 @@ public class ProductsActivity extends AppCompatActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        Product product = db.getItem(position);
+        Product product = db.getProduct(position);
 
 
         Intent intent = new Intent(this , MakeNewListActivity.class);
