@@ -16,18 +16,12 @@ public class Product implements Serializable{
         this._name = name;
         this._brand = brand;
     }
-
-
-
     public Product(String name , int id, String brand ){
         this._name = name;
         this._id = id;
         this._brand = brand;
     }
-
-    //getters
-
-
+//getters
     public int get_id() {
         return _id;
     }
@@ -37,12 +31,7 @@ public class Product implements Serializable{
     public String get_brand() {
         return _brand;
     }
-
-
     //Setters
-
-
-
     public void set_id(int _id) {
         this._id = _id;
     }

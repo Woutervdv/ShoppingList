@@ -79,6 +79,8 @@ public class SMSActivity extends AppCompatActivity implements View.OnClickListen
         }else{
             Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
         }
+
+        finish();
     }
 
 

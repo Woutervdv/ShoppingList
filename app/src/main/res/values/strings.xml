@@ -4,5 +4,22 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="shoppinglistsTitle">ShoppingLists</string>
+    <string name="select_created_list">selecteer lijst</string>
+    <string name="start_nieuwe_lijst">start nieuwe lijst</string>
+    <string name="add_product_to_db">Voeg nieuw product toe</string>
+    <string name="select_item">Selecteer product</string>
+    <string name="save">Opslaan</string>
+    <string name="title">Titel</string>
+    <string name="verwijder_lijst">Verwijder Lijst</string>
+    <string name="stuur_sms">Stuur SMS</string>
+    <string name="voer_hier_de_titel_in">Voer hier de titel in</string>
+    <string name="phonenumber">Telefoon nummer</string>
+    <string name="send">Stuur SMS</string>
+    <string name="telefoonnummer">Telefoon Nummer</string>
+    <string name="huismerk">Huismerk</string>
+    <string name="create_product">Maak product</string>
+    <string name="product_details">Product Details:</string>
+    <string name="name">Naam</string>
+    <string name="brand">Merk</string>
 
 </resources>

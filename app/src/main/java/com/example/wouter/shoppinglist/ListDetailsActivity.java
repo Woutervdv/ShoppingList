@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,6 +24,7 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
 
     ListView lv;
     Button btnBerwijderLijst, btnSendMessage;
+    TextView txtTitle;
     ArrayList<HashMap<String, String>> mem = new ArrayList<HashMap<String, String>>();
     List list;
     DBHandler db;
@@ -39,6 +42,7 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
         btnBerwijderLijst = (Button)findViewById(R.id.btnDeleteList);
         btnBerwijderLijst.setOnClickListener(this);
         lv.setOnItemClickListener(this);
+        txtTitle = (TextView)findViewById(R.id.txtListTitle);
         fillListView();
     }
 
@@ -49,7 +53,7 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
 
     public void fillListView() {
         list = (List)getIntent().getSerializableExtra("list");
-
+        txtTitle.setText(list.get_listName());
 
         ArrayList<ItemsInList> items;
 
