@@ -12,6 +12,7 @@ import android.widget.SimpleAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
@@ -350,6 +351,33 @@ public class DBHandler extends SQLiteOpenHelper {
             try { db.close(); } catch (Exception ignore) {}
         }
         return prod;
+    }
+
+    public  void deleteItemInList(int listid , int prodid){
+        String deleteQuery = "DELETE FROM " + TABLE_ITEMS_IN_LISTS + " WHERE " + KEY_LIST_ID + " = " + listid + " AND " + KEY_ID +" = " + prodid +";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL(deleteQuery);
+        } catch (Exception ex){
+            Log.d(TAG, "delete item in list failed /" + ex.getMessage().toString());
+        }finally {
+            db.close();
+        }
+    }
+
+
+    public void DeleteList(com.example.wouter.shoppinglist.List list){
+        String deleteListQuery = "DELETE FROM " + TABLE_LIST + " WHERE " + KEY_LIST_ID + " = " + list.get_listId() + ";" ;
+        String deleteItemsQuery = "DELETE FROM " + TABLE_ITEMS_IN_LISTS + " WHERE " + KEY_LIST_ID + " = " + list.get_listId() + ";";
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL(deleteListQuery);
+            db.execSQL(deleteItemsQuery);
+        }catch (Exception ex){
+            Log.d(TAG , "delete list failed /" +ex.getMessage().toString() );
+        }finally {
+            db.close();
+        }
     }
 
 }

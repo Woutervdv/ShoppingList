@@ -23,6 +23,9 @@ public class SelectCreatedListActivity extends AppCompatActivity
     private DBHandler db;
     private ArrayList<List> lists;
     private ListView lv;
+    ArrayList<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+    SimpleAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +36,6 @@ public class SelectCreatedListActivity extends AppCompatActivity
 
         lv = (ListView)findViewById(R.id.listShoppingsLists);
         lv.setOnItemClickListener(this);
-
         ShowLists();
     }
 
@@ -42,8 +44,7 @@ public class SelectCreatedListActivity extends AppCompatActivity
         try{
             lists = db.getAllLists();
 
-            ArrayList<HashMap<String, String>> data =
-                    new ArrayList<HashMap<String, String>>();
+
             for (List list : lists){
                 HashMap<String, String> map = new HashMap<String, String>();
                 map.put("ListName", list.get_listName());
@@ -54,7 +55,7 @@ public class SelectCreatedListActivity extends AppCompatActivity
             String[] from = {"ListName" , " "};
             int[] to = {R.id.prodNameTextView , R.id.prodBrandTextView };
 
-            SimpleAdapter adapter = new SimpleAdapter(this, data,resource, from, to);
+            adapter = new SimpleAdapter(this, data,resource, from, to);
             lv.setAdapter(adapter);
             Log.d("Lists", "Feed displayed");
         }catch (Exception ex){
@@ -68,6 +69,18 @@ public class SelectCreatedListActivity extends AppCompatActivity
 
         Intent intent = new Intent(getApplicationContext(), ListDetailsActivity.class);
         intent.putExtra("list" , list);
-        startActivity(intent);
+        startActivityForResult(intent , 1);
+
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                finish();
+                startActivity(data);
+            }
+        }
     }
 }

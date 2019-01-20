@@ -1,6 +1,8 @@
 package com.example.wouter.shoppinglist;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable{
     private String _name;
     private  String _brand;
     private  int _id;

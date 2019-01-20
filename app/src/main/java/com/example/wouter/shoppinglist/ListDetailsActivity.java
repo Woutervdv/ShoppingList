@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,10 +21,11 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
 
 
     ListView lv;
-    Button btnBerwijderLijst;
+    Button btnBerwijderLijst, btnSendMessage;
     ArrayList<HashMap<String, String>> mem = new ArrayList<HashMap<String, String>>();
     List list;
     DBHandler db;
+    ArrayList<Product> products = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,8 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
 
         setContentView(R.layout.activity_list_details);
         lv = (ListView)findViewById(R.id.lvShoppingList);
+        btnSendMessage = (Button)findViewById(R.id.btnSendMessage);
+        btnSendMessage.setOnClickListener(this);
         btnBerwijderLijst = (Button)findViewById(R.id.btnDeleteList);
         btnBerwijderLijst.setOnClickListener(this);
         lv.setOnItemClickListener(this);
@@ -62,6 +66,7 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
                         map.put("Name", prod.get_name());
                         map.put("Brand", prod.get_brand());
                         mem.add(map);
+                        products.add(prod);
 
                     }
                     int resource = R.layout.listview_item;
@@ -82,13 +87,30 @@ public class ListDetailsActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        View v = lv.getChildAt(position);
+        Product prod = db.getProductId(((TextView) v.findViewById(R.id.prodNameTextView)).getText().toString() , ((TextView)v.findViewById(R.id.prodBrandTextView)).getText().toString());
+        db.deleteItemInList(list.get_listId() , prod.get_id());
         mem.remove(position);
         lv.invalidateViews();
-        //db.deleteItemInList();
     }
 
     @Override
     public void onClick(View v) {
-        //db.DeleteList(list);
+        switch (v.getId()){
+            case R.id.btnSendMessage:
+                Intent intent1 = new Intent(this, SMSActivity.class);
+                intent1.putExtra("products" , products);
+                this.startActivity(intent1);
+
+
+                break;
+            case R.id.btnDeleteList:
+                db.DeleteList(list);
+                Intent intent2 = new Intent(this, SelectCreatedListActivity.class);
+                setResult(RESULT_OK , intent2);
+                finish();
+                break;
+        }
+
     }
 }
